@@ -1,5 +1,6 @@
 package de.runtimeterror.customer;
 
+import de.runtimeterror.amqp.RabbitMQMessageProducer;
 import de.runtimeterror.clients.fraud.FraudCheckResponse;
 import de.runtimeterror.clients.fraud.FraudClient;
 import de.runtimeterror.clients.notification.NotificationClient;
@@ -13,7 +14,7 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final FraudClient fraudClient;
-    private final NotificationClient notificationClient;
+    private final RabbitMQMessageProducer rabbitMQMessageProducer;
 
     public void registerCustomer(CustomerRegistrationRequest customerRegistrationRequest) {
         Customer customer = Customer.builder()
@@ -31,14 +32,17 @@ public class CustomerService {
         if(fraudCheckResponse == null ||fraudCheckResponse.isFraudster()){
             throw new IllegalStateException("fraudster");
         }
-        // todo: make it async. i.e add to queue
-        notificationClient.sendNotification(
-                new NotificationRequest(
-                        customer.getId(),
-                        customer.getEmail(),
-                        String.format("Hi %s, welcome to service...",
-                                customer.getFirstName())
-                )
+
+        NotificationRequest notificationRequest = new NotificationRequest(
+                customer.getId(),
+                customer.getEmail(),
+                String.format("Hi %s, welcome to service...",
+                        customer.getFirstName())
+        );
+        rabbitMQMessageProducer.publish(
+                notificationRequest,
+                "internal.exchange",
+                "internal.notification.routing-key"
         );
     }
 }

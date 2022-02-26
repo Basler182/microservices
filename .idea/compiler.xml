@@ -12,6 +12,7 @@
         <module name="clients" />
         <module name="api-gw" />
         <module name="fraud" />
+        <module name="amqp" />
         <module name="customer" />
       </profile>
     </annotationProcessing>
