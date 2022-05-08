@@ -56,18 +56,19 @@ services:
 #    depends_on:
 #      - zipkin
 
-  api-gw:
-    image: basler182/api-gw:latest
-    container_name: api-gw
-    ports:
-      - "8083:8083"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    networks:
-      - spring
-    depends_on:
-    - zipkin
-    - eureka-service
+#  api-gw:
+#    image: basler182/api-gw:latest
+#    container_name: api-gw
+#    ports:
+#      - "8083:8083"
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#    networks:
+#      - spring
+#    depends_on:
+#    - zipkin
+#    - eureka-service
+
   customer:
     image: basler182/customer:latest
     container_name: customer
@@ -80,7 +81,6 @@ services:
       - postgres
     depends_on:
       - zipkin
-      - eureka-service
       - postgres
       - rabbitmq
   fraud:
@@ -95,7 +95,6 @@ services:
       - postgres
     depends_on:
       - zipkin
-      - eureka-service
       - postgres
 
   notification:
@@ -110,7 +109,6 @@ services:
       - postgres
     depends_on:
       - zipkin
-      - eureka-server
       - postgres
       - rabbitmq
 
