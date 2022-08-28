@@ -10,12 +10,14 @@ spring:
     username: basler182
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
   zipkin:
     base-url: http://localhost:9411
   rabbitmq:
