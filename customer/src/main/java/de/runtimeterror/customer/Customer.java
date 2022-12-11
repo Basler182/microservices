@@ -1,11 +1,13 @@
 package de.runtimeterror.customer;
 
+import de.runtimeterror.customer.rights.CustomerRights;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Builder
@@ -26,4 +28,11 @@ public class Customer {
     private String firstName;
     private String lastName;
     private String email;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "customer_rights",
+            joinColumns = @JoinColumn(name = "customer_id")
+    )
+    private List<CustomerRights> rights;
 }

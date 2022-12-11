@@ -1,6 +1,7 @@
 package de.runtimeterror.customer;
 
-import de.runtimeterror.clients.orders.OrdersClient;
+import de.runtimeterror.customer.rights.CustomerRights;
+import de.runtimeterror.customer.rights.Secured;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,19 +10,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Validated
 @RestController
 @RequestMapping("api/v1/customers")
-public record CustomerController(CustomerService customerService, CustomerRepository customerRepository, OrdersClient ordersClient) {
+public class CustomerController {
 
+    private final CustomerService customerService;
+    private final CustomerRepository customerRepository;
 
+    public CustomerController(CustomerService customerService, CustomerRepository customerRepository) {
+        this.customerService = customerService;
+        this.customerRepository = customerRepository;
+    }
 
     @Operation(summary = "Register a new customer")
     @ApiResponses(value = {
@@ -37,8 +41,9 @@ public record CustomerController(CustomerService customerService, CustomerReposi
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Customers found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content)})
+    @Secured(CustomerRights.VIEW_CUSTOMER_LIST)
     @GetMapping(produces = "application/json")
-    public List<Customer> getAllCustomers() {
+    public List<Customer> getAllCustomers(@RequestHeader("customerId") Customer customer) {
         return customerRepository.findAll();
     }
 
@@ -46,8 +51,9 @@ public record CustomerController(CustomerService customerService, CustomerReposi
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Customer found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content)})
+    @Secured(CustomerRights.VIEW_CUSTOMER)
     @GetMapping(path = "/{customerId}", produces = "application/json")
-    public Customer getCustomer(@PathVariable @NotNull Integer customerId) {
+    public Customer getCustomer(@PathVariable @NotNull Integer customerId, @RequestHeader("customerId") Customer customer) {
         return customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(customerId));
     }
 }

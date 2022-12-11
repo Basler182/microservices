@@ -1,6 +1,7 @@
 package de.runtimeterror.customer;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -46,6 +47,16 @@ public class CustomerRestControllerAdvice {
                         .stream()
                         .map(DefaultMessageSourceResolvable::getDefaultMessage)
                         .collect(Collectors.toList()));
+    }
+
+    @ExceptionHandler(value = {de.runtimeterror.customer.rights.CustomerNotAllowedException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorMessage handleCustomerNotAllowedException(de.runtimeterror.customer.rights.CustomerNotAllowedException e) {
+        return new ErrorMessage()
+                .setStatusCode(403)
+                .setMessage(e.getMessage())
+                .setLocalDateTime(LocalDateTime.now())
+                .setDescription("Customer not allowed");
     }
 }
 
