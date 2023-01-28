@@ -22,9 +22,12 @@ public class CustomerController {
     private final CustomerService customerService;
     private final CustomerRepository customerRepository;
 
-    public CustomerController(CustomerService customerService, CustomerRepository customerRepository) {
+    private final CustomerDTOMapper customerDTOMapper;
+
+    public CustomerController(CustomerService customerService, CustomerRepository customerRepository, CustomerDTOMapper customerDTOMapper) {
         this.customerService = customerService;
         this.customerRepository = customerRepository;
+        this.customerDTOMapper = customerDTOMapper;
     }
 
     @Operation(summary = "Register a new customer")
@@ -53,7 +56,7 @@ public class CustomerController {
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content)})
     @Secured(CustomerRights.VIEW_CUSTOMER)
     @GetMapping(path = "/{customerId}", produces = "application/json")
-    public Customer getCustomer(@PathVariable @NotNull Integer customerId, @RequestHeader("customerId") Customer customer) {
-        return customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(customerId));
+    public CustomerDTO getCustomer(@PathVariable @NotNull Integer customerId, @RequestHeader("customerId") Customer customer) {
+        return customerRepository.findById(customerId).map(customerDTOMapper).orElseThrow(() -> new CustomerNotFoundException(customerId));
     }
 }
