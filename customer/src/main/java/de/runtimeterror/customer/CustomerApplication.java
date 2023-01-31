@@ -18,7 +18,7 @@ import org.springframework.context.annotation.PropertySources;
         basePackages = "de.runtimeterror.clients"
 )
 @PropertySources({
-     @PropertySource("classpath:clients-${spring.profiles.active}.properties")
+     @PropertySource(value = "classpath:clients-${spring.profiles.active}.properties", ignoreResourceNotFound = true),
 })
 public class CustomerApplication {
     public static void main(String[] args) {
