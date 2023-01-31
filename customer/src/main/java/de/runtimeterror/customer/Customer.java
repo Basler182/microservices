@@ -1,5 +1,6 @@
 package de.runtimeterror.customer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.runtimeterror.customer.rights.CustomerRights;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,7 @@ public class Customer {
             strategy = GenerationType.SEQUENCE,
             generator = "customer_id_sequence"
     )
+    @JsonIgnore
     private Integer id;
     private String firstName;
     private String lastName;
