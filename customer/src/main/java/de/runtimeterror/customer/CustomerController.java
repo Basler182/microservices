@@ -46,7 +46,7 @@ public class CustomerController {
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content)})
     @Secured(CustomerRights.VIEW_CUSTOMER_LIST)
     @GetMapping(produces = "application/json")
-    public List<Customer> getAllCustomers(@RequestHeader("customerId") Customer customer) {
+    public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
 

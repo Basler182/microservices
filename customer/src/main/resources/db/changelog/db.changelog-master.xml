@@ -8,14 +8,5 @@
     <changeSet id="1661701131408-1" author="schneider (generated)">
         <createSequence incrementBy="50" sequenceName="customer_id_sequence" startValue="1"/>
     </changeSet>
-    <changeSet id="1661701131408-2" author="schneider (generated)">
-        <createTable tableName="customer">
-            <column name="id" type="INT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_customer"/>
-            </column>
-            <column name="first_name" type="VARCHAR(255)"/>
-            <column name="last_name" type="VARCHAR(255)"/>
-            <column name="email" type="VARCHAR(255)"/>
-        </createTable>
-    </changeSet>
+    <includeAll  path="sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
